@@ -68,7 +68,26 @@
     border-radius: 5px;
     width: 200px;
 }
+
+.button-container {
+    margin-bottom: 20px;
+  }
   
+.button-container button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+  
+.button-container button:hover {
+    background-color: #0056b3;
+}
+
 @media (max-width: 768px) {
     .movie-card {
       width: 250px;

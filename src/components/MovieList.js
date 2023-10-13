@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './MovieList.css';
+import FavouriteMovies from './FavouriteMovies';
 
 const API_KEY = '7d785bcf7c0bd33928ae19591eae5e39';
 const API_BASE_URL = 'https://api.themoviedb.org/3/movie/';
@@ -11,6 +12,7 @@ const MovieList = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('popular');
 
   const fetchMovies = useCallback(async () => {
     try {
@@ -46,8 +48,16 @@ const MovieList = () => {
     setPage(prevPage => prevPage + 1);
   };
 
+  const handleTabClick = tab => {
+    setActiveTab(tab);
+  };
+
   return (
     <div className="movie-container">
+      <div className="button-container">
+        <button onClick={() => handleTabClick('popular')}>Movies Category</button>
+        <button onClick={() => handleTabClick('favourites')}>Favourite Movies</button>
+      </div>
       <div>
         <label htmlFor="category">Select Category:</label>
         <select id="category" value={category} onChange={handleCategoryChange}>
@@ -59,7 +69,7 @@ const MovieList = () => {
       </div>
       {error && <div className="error-message">{error}</div>}
       {loading && <div className="loading-spinner">Loading...</div>}
-      <div className="movie-cards">
+      {activeTab === 'popular' && (<div className="movie-cards">
         {movies.map(movie => (
           <div key={movie.id} className="movie-card">
             <img
@@ -75,6 +85,10 @@ const MovieList = () => {
           </div>
         ))}
       </div>
+      )}
+      {activeTab === 'favourites' && (
+        <FavouriteMovies favouriteMovies={'asda'} />
+      )}
       {!loading && !error && (
         <button onClick={handleLoadMore} className="load-more-button">
           Load More
