@@ -88,6 +88,21 @@
     background-color: #0056b3;
 }
 
+.add-to-favorites-button {
+  background-color: #007bff; 
+  color: white; 
+  border: none; 
+  padding: 10px 20px; 
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  border-radius: 5px; 
+}
+
+.add-to-favorites-button:hover {
+  opacity: 0.8;
+}
+
 @media (max-width: 768px) {
     .movie-card {
       width: 250px;
