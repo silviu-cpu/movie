@@ -24,6 +24,7 @@ const MovieList = () => {
 
       setMovies(prevMovies => [...prevMovies, ...response.data.results]);
       setLoading(false);
+
     } catch (error) {
       console.error('Error fetching movies:', error);
       setLoading(false);
@@ -47,7 +48,6 @@ const MovieList = () => {
 
   return (
     <div className="movie-container">
-      <h1>Popular Movies</h1>
       <div>
         <label htmlFor="category">Select Category:</label>
         <select id="category" value={category} onChange={handleCategoryChange}>
@@ -57,6 +57,8 @@ const MovieList = () => {
           <option value="now_playing">Now Playing</option>
         </select>
       </div>
+      {error && <div className="error-message">{error}</div>}
+      {loading && <div className="loading-spinner">Loading...</div>}
       <div className="movie-cards">
         {movies.map(movie => (
           <div key={movie.id} className="movie-card">
