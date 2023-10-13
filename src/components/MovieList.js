@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import './MovieList.css'; // Import your CSS file for movie cards
+import './MovieList.css';
 
-const API_KEY = '7d785bcf7c0bd33928ae19591eae5e39'; // Replace with your TMDB API key
+const API_KEY = '7d785bcf7c0bd33928ae19591eae5e39';
 const API_BASE_URL = 'https://api.themoviedb.org/3/movie/';
 
 const MovieList = () => {
