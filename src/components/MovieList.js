@@ -5,6 +5,7 @@ import FavouriteMovies from "./FavouriteMovies";
 
 const API_KEY = "7d785bcf7c0bd33928ae19591eae5e39";
 const API_BASE_URL = "https://api.themoviedb.org/3/movie/";
+const API_BASE_SEARCH_URL = "https://api.themoviedb.org/3";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
@@ -14,11 +15,39 @@ const MovieList = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("popular");
   const [favouriteMovies, setFavouriteMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
     setFavouriteMovies(storedFavorites);
   }, []);
+
+  const searchMovies = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE_SEARCH_URL}/search/movie`, {
+        params: {
+          api_key: API_KEY,
+          language: "en-US",
+          query: searchQuery,
+          include_adult: false,
+          page: page,
+        },
+      });
+
+      const uniqueMovies = Array.from(
+        new Set(response.data.results.map((movie) => movie.id))
+      ).map((id) => response.data.results.find((movie) => movie.id === id));
+
+      setMovies((prevMovies) => [...prevMovies, ...uniqueMovies]);
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error searching movies:", error);
+      setLoading(false);
+      setError("Error searching movies. Please try again later.");
+    }
+  };
 
   const fetchMovies = useCallback(async () => {
     try {
@@ -30,7 +59,12 @@ const MovieList = () => {
         },
       });
 
-      setMovies((prevMovies) => [...prevMovies, ...response.data.results]);
+      const uniqueMovies = Array.from(
+        new Set(response.data.results.map((movie) => movie.id))
+      ).map((id) => response.data.results.find((movie) => movie.id === id));
+
+      setMovies((prevMovies) => [...prevMovies, ...uniqueMovies]);
+
       setLoading(false);
     } catch (error) {
       console.error("Error fetching movies:", error);
@@ -42,6 +76,14 @@ const MovieList = () => {
   useEffect(() => {
     fetchMovies();
   }, [category, page, fetchMovies]);
+
+  useEffect(() => {
+    if (searchQuery) {
+      setPage(1);
+      setMovies([]);
+      searchMovies();
+    }
+  }, [searchQuery, page]);
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
@@ -76,6 +118,10 @@ const MovieList = () => {
     localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
   };
 
+  const handleSearchInputChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <div className="movie-container">
       <div className="button-container">
@@ -86,6 +132,16 @@ const MovieList = () => {
           Favourite Movies
         </button>
       </div>
+
+      {activeTab === "popular" && (
+        <input
+          type="text"
+          placeholder="Search movies..."
+          value={searchQuery}
+          onChange={handleSearchInputChange}
+          className="input-field"
+        />
+      )}
 
       {activeTab === "popular" && (
         <div>
